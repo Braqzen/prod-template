@@ -1,0 +1,67 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-database}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-user} -d ${POSTGRES_DB:-database}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  rpc:
+    image: prod-template-image:latest
+    command: ["/app/rpc"]
+    ports:
+      - "8000:8000"
+    environment:
+      RUST_LOG: "info,sqlx=off,sea_orm_migration=off"
+      DATABASE_URL: postgresql://user:password@postgres:5432/database
+      SOCKET: 0.0.0.0:8000
+    # healthcheck:
+    #   test:
+    #     [
+    #       "CMD-SHELL",
+    #       "curl --fail http://localhost:8000/_status/live || exit 1",
+    #     ]
+    #   interval: 2s
+    #   timeout: 5s
+    #   retries: 5
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  worker:
+    image: prod-template-image:latest
+    command: ["/app/worker"]
+    environment:
+      RUST_LOG: "info,sqlx=off,sea_orm_migration=off"
+      DATABASE_URL: postgresql://user:password@postgres:5432/database
+    depends_on:
+      - postgres
+      - rpc
+    restart: unless-stopped
+
+  # DB explorer in web browser
+  # http://localhost:7403/?pgsql=postgres&username=user&db=database&ns=public
+  # Password: password
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 7403:8080
+
+volumes:
+  pgdata:
