@@ -36,5 +36,3 @@ WORKDIR /app
 
 COPY --from=builder /app/target/release/rpc /app/rpc
 COPY --from=builder /app/target/release/worker /app/worker
-
-CMD ["/app/rpc"]

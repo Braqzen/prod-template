@@ -9,10 +9,15 @@ use environment::Environment;
 use eyre::Result;
 use server::Server;
 use tracing::error;
+use tracing_subscriber::EnvFilter;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt()
+        .json()
+        .flatten_event(true)
+        .with_env_filter(EnvFilter::from_default_env())
+        .init();
 
     // Check for any CLI arguments to prioritize
     let args = match Cli::parse() {

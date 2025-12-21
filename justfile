@@ -2,6 +2,7 @@ default: send
 
 # -- Docker --
 build:
+	docker rmi prod-template-image:latest 2>/dev/null || true
 	docker build -t prod-template-image .
 
 run:

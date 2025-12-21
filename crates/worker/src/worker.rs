@@ -15,6 +15,8 @@ impl Worker {
     }
 
     pub async fn run(&self) -> Result<()> {
+        info!("Starting worker");
+
         let mut listener = self.database.listener().await?;
 
         loop {
