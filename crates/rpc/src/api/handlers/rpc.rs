@@ -22,7 +22,7 @@ pub async fn request(
     let method = match Validator::validate(state, &request).await {
         Ok(method) => method,
         Err(error) => {
-            warn!(method = request.method, id = %request.id, message = error.message, "Invalid request");
+            warn!(method = request.method, id = %request.id, error = error.message, "Invalid request");
             return Response::error(error, request.id).into();
         }
     };
@@ -30,7 +30,7 @@ pub async fn request(
     match method.call().await {
         Ok(result) => return Response::success(result, request.id).into(),
         Err(error) => {
-            warn!(method = request.method, id = %request.id, message = error.message, "Error calling method");
+            warn!(method = request.method, id = %request.id, error = error.message, "Error calling method");
             return Response::error(error, request.id).into();
         }
     }
