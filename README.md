@@ -34,14 +34,6 @@ Stop and delete local state.
 just nuke
 ```
 
-**Send a request**
-
-Send a dummy `eth_sendRawTransaction` request
-
-```shell
-just send
-```
-
 **View dashboards**
 
 Open http://localhost:3000 in your browser of choice and log in with the default credentials `user=admin` & `password=admin`
