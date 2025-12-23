@@ -4,6 +4,7 @@ members = [
     "crates/database",
     "crates/database/migration",
     "crates/rpc",
+    "crates/spammer",
     "crates/worker",
 ]
 
@@ -21,6 +22,8 @@ axum = { version = "0.8.7", features = ["macros"] }
 dotenvy = "0.15.7"
 eyre = "0.6.12"
 futures-util = "0.3.31"
+rand = "0.9.2"
+reqwest = { version = "0.12.28", default-features = false, features = ["rustls-tls", "json"] }
 sea-orm = { version = "1.1.19", features = ["runtime-tokio-rustls", "sqlx-postgres", "macros"] }
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.145"

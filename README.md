@@ -53,12 +53,12 @@ On the left side of the screen navigate to `Dashboards` and select a dashboard.
 - **database**: Sea-ORM abstraction layer for PostgreSQL
 - **database/migration**: Sea-ORM Migrator tool for managing database schema changes
 - **rpc**: ETH-JSON RPC server storing incoming transaction requests
+- **spammer**: Transaction spammer for the rpc to simulate workload
 - **worker**: Background worker listening for database notifications and processing unprocessed transactions
 
 ## Development
 
 - **justfile**: Contains various commands to manage the repo
-- **.env.example**: Example environment variables
 - **Dockerfile**: Multi-stage build compiling both RPC and Worker binaries into a single image
 - **docker-compose.yml**: Defines all services for local use
 - **grafana**: Various files for observability configuration and dashboards

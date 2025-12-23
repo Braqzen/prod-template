@@ -54,6 +54,17 @@ services:
       - rpc
     restart: unless-stopped
 
+  spammer:
+    image: prod-template-image:latest
+    command: ["/app/spammer"]
+    environment:
+      RUST_LOG: "info"
+      PRIVATE_KEYS: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80,0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d,0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a,0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6"
+      RPC: http://rpc:8000
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
   # DB explorer in web browser
   # http://localhost:7403/?pgsql=postgres&username=user&db=database&ns=public
   # Password: password

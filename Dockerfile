@@ -28,7 +28,7 @@ COPY . .
 
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
-    cargo build --release --bin rpc --bin worker
+    cargo build --release --bin rpc --bin worker --bin spammer
 
 FROM debian:bookworm-slim
 
@@ -36,3 +36,4 @@ WORKDIR /app
 
 COPY --from=builder /app/target/release/rpc /app/rpc
 COPY --from=builder /app/target/release/worker /app/worker
+COPY --from=builder /app/target/release/spammer /app/spammer
