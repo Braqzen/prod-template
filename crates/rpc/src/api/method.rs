@@ -24,6 +24,7 @@ impl TryFrom<String> for Method {
     fn try_from(value: String) -> Result<Self, Self::Error> {
         match value.as_str() {
             "eth_sendRawTransaction" => Ok(Method::SendRawTransaction),
+            "eth_sendPrivateTransaction" => Ok(Method::SendRawTransaction), // Use the same handler
             "project_transactionStatus" => Ok(Method::TransactionStatus),
             _ => Err(format!("Invalid method: {value}")),
         }

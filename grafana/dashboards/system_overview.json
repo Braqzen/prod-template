@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 1,
   "links": [],
   "panels": [
     {
@@ -94,7 +94,7 @@
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "showLegend": true
         },
         "tooltip": {
           "hideZeros": false,
@@ -107,14 +107,14 @@
         {
           "direction": "backward",
           "editorMode": "code",
-          "expr": "sum by (method) (\n  count_over_time(\n    {service_name=\"rpc\"} \n    | json \n    | method=\"eth_sendRawTransaction\"\n    [1m]\n  )\n)",
+          "expr": "sum by (method) (\n  count_over_time(\n    {service_name=\"rpc\"} \n    | json \n    | method=~\"eth_sendRawTransaction|eth_sendPrivateTransaction\"\n    [1m]\n  )\n)",
           "maxLines": 5000,
           "queryType": "range",
           "refId": "A",
           "step": "1m"
         }
       ],
-      "title": "eth_sendRawTransaction",
+      "title": "Requests",
       "type": "timeseries"
     },
     {
@@ -199,9 +199,7 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": [
-            "sum"
-          ],
+          "reducer": ["sum"],
           "show": false
         },
         "showHeader": true,
@@ -254,12 +252,7 @@
           "id": "filterFieldsByName",
           "options": {
             "include": {
-              "names": [
-                "timestamp",
-                "message",
-                "method",
-                "error"
-              ]
+              "names": ["timestamp", "message", "method", "error"]
             }
           }
         },
@@ -329,9 +322,7 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": [
-            "sum"
-          ],
+          "reducer": ["sum"],
           "show": false
         },
         "showHeader": true
@@ -361,9 +352,7 @@
           "id": "filterFieldsByName",
           "options": {
             "include": {
-              "names": [
-                "method"
-              ]
+              "names": ["method"]
             }
           }
         },
@@ -380,9 +369,7 @@
             },
             "mode": "reduceRow",
             "reduce": {
-              "include": [
-                "method"
-              ],
+              "include": ["method"],
               "reducer": "count"
             }
           }
@@ -392,15 +379,11 @@
           "options": {
             "fields": {
               "Count": {
-                "aggregations": [
-                  "sum"
-                ],
+                "aggregations": ["sum"],
                 "operation": "aggregate"
               },
               "method": {
-                "aggregations": [
-                  "count"
-                ],
+                "aggregations": ["count"],
                 "operation": "groupby"
               }
             }
@@ -432,10 +415,131 @@
         }
       ],
       "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "hash"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 699
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "timestamp"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 279
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "signer"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 573
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 18,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 4,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.6.1",
+      "targets": [
+        {
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{service_name=\"worker\"}\n| json\n| message = \"Transaction processed\"",
+          "maxLines": 5000,
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "title": "Transaction Status",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "delimiter": ",",
+            "replace": true,
+            "source": "Line"
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": ["timestamp", "hash", "signer", "status"]
+            }
+          }
+        }
+      ],
+      "type": "table"
     }
   ],
   "preload": false,
-  "refresh": "1m",
+  "refresh": "5s",
   "schemaVersion": 41,
   "tags": [],
   "templating": {
@@ -449,5 +553,5 @@
   "timezone": "browser",
   "title": "System Overview",
   "uid": "ff7wacpc1s6bkd",
-  "version": 2
+  "version": 3
 }

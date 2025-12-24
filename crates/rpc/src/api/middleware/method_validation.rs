@@ -46,8 +46,12 @@ where
 
             let request = if let Some(request) = parts.extensions.get::<ApiRequest>() {
                 // Add custom methods here
-                if !["eth_sendRawTransaction", "project_transactionStatus"]
-                    .contains(&request.method.as_str())
+                if ![
+                    "eth_sendRawTransaction",
+                    "project_transactionStatus",
+                    "eth_sendPrivateTransaction",
+                ]
+                .contains(&request.method.as_str())
                 {
                     warn!(method = request.method, "Unsupported method");
 

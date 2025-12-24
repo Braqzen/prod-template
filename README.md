@@ -2,7 +2,7 @@
 
 > Work in progress
 
-A production-ready template for Rust services (Router with ETH-JSON RPC API and background worker), PostgreSQL for storage, observability stack (Grafana, Loki, Promtail), and infrastructure as code (IaC) for cloud provisioning (AWS terraform).
+A production-ready template for Rust services (Router with ETH-JSON RPC API and background worker), PostgreSQL for storage, observability stack (Grafana, Loki, Alloy), and infrastructure as code (IaC) for cloud provisioning (AWS terraform).
 
 ## Quick Start
 
