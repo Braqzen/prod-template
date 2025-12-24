@@ -82,11 +82,11 @@ async fn main() -> Result<()> {
         };
 
         // Pick a random method
-        let method = rand::rng().random_range(0..3);
+        let method = rand::rng().random_range(0..100);
         let method = match method {
-            0 => Method::Raw,
-            1 => Method::Bundle,
-            2 => Method::Private,
+            0..=74 => Method::Raw,      // 75%
+            75..=89 => Method::Bundle,  // 15%
+            90..=99 => Method::Private, // 10%
             _ => unreachable!(),
         };
 

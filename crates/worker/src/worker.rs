@@ -1,5 +1,6 @@
 use database::{Database, TransactionModel};
 use eyre::Result;
+use rand::Rng;
 use std::time::Duration;
 use tokio::time::sleep;
 use tracing::{info, warn};
@@ -47,11 +48,12 @@ impl Worker {
                     "Processing transaction"
                 );
                 match self.process_transaction(transaction.clone()).await {
-                    Ok(()) => {
+                    Ok(status) => {
                         info!(
                             hash = transaction.id,
                             signer = transaction.signer,
-                            "Transaction processed successfully"
+                            status,
+                            "Transaction processed"
                         );
                     }
                     Err(error) => {
@@ -67,13 +69,17 @@ impl Worker {
         }
     }
 
-    async fn process_transaction(&self, transaction: TransactionModel) -> Result<()> {
+    async fn process_transaction(&self, transaction: TransactionModel) -> Result<String> {
+        let status = match rand::rng().random_range(0..10) < 9 {
+            true => "Success",
+            false => "Failed",
+        };
         match self
             .database
-            .update_transaction_status(transaction.id.clone(), "Processed".into())
+            .update_transaction_status(transaction.id.clone(), status.into())
             .await
         {
-            Ok(()) => Ok(()),
+            Ok(()) => Ok(status.to_string()),
             Err(error) => Err(error),
         }
     }
