@@ -272,7 +272,7 @@
       },
       "gridPos": {
         "h": 10,
-        "w": 13,
+        "w": 12,
         "x": 0,
         "y": 11
       },
@@ -441,8 +441,8 @@
       },
       "gridPos": {
         "h": 10,
-        "w": 11,
-        "x": 13,
+        "w": 12,
+        "x": 12,
         "y": 11
       },
       "id": 3,
@@ -631,8 +631,8 @@
       },
       "gridPos": {
         "h": 10,
-        "w": 11,
-        "x": 13,
+        "w": 12,
+        "x": 12,
         "y": 21
       },
       "id": 5,
@@ -810,6 +810,7 @@
     }
   ],
   "preload": false,
+  "refresh": "30s",
   "schemaVersion": 41,
   "tags": [],
   "templating": {
@@ -841,5 +842,5 @@
   "timezone": "browser",
   "title": "User Activity",
   "uid": "bf85talgkz3eob",
-  "version": 6
+  "version": 8
 }

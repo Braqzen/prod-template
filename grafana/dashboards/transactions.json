@@ -229,6 +229,584 @@
         }
       ],
       "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
+      "id": 2,
+      "options": {
+        "bucketSize": 1,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.1",
+      "targets": [
+        {
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{service_name=\"worker\"}\n| json\n| message = \"Transaction processed\"",
+          "maxLines": 5000,
+          "queryType": "range",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{service_name=\"rpc\"}\n| json\n| message = \"Transaction created\"",
+          "hide": false,
+          "maxLines": 5000,
+          "queryType": "range",
+          "refId": "B"
+        }
+      ],
+      "title": "Processing Time (ms)",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "delimiter": ",",
+            "keepTime": false,
+            "replace": true,
+            "source": "Line"
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "dateFormat": "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'",
+                "destinationType": "time",
+                "targetField": "timestamp"
+              }
+            ],
+            "fields": {}
+          }
+        },
+        {
+          "filter": {
+            "id": "byRefId",
+            "options": "/^(?:A)$/"
+          },
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": ["timestamp", "hash"]
+            }
+          }
+        },
+        {
+          "filter": {
+            "id": "byRefId",
+            "options": "/^(?:B)$/"
+          },
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": ["timestamp", "hash"]
+            }
+          }
+        },
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "hash",
+            "mode": "inner"
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "",
+            "binary": {
+              "left": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "timestamp 1"
+                }
+              },
+              "operator": "-",
+              "right": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "timestamp 2"
+                }
+              }
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "hash": true,
+              "timestamp 1": true,
+              "timestamp 2": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "timestamp 1 - timestamp 2": "Time (ms)"
+            }
+          }
+        }
+      ],
+      "type": "histogram"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red"
+              },
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.6.1",
+      "targets": [
+        {
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{service_name=\"worker\"}\n| json\n| message = \"Transaction processed\"",
+          "maxLines": 5000,
+          "queryType": "range",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{service_name=\"rpc\"}\n| json\n| message = \"Transaction created\"",
+          "hide": false,
+          "maxLines": 5000,
+          "queryType": "range",
+          "refId": "B"
+        }
+      ],
+      "title": "Processing Time (ms)",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "delimiter": ",",
+            "keepTime": false,
+            "replace": true,
+            "source": "Line"
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "dateFormat": "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'",
+                "destinationType": "time",
+                "targetField": "timestamp"
+              }
+            ],
+            "fields": {}
+          }
+        },
+        {
+          "filter": {
+            "id": "byRefId",
+            "options": "/^(?:A)$/"
+          },
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": ["timestamp", "hash"]
+            }
+          }
+        },
+        {
+          "filter": {
+            "id": "byRefId",
+            "options": "/^(?:B)$/"
+          },
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": ["timestamp", "hash"]
+            }
+          }
+        },
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "hash",
+            "mode": "inner"
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "",
+            "binary": {
+              "left": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "timestamp 1"
+                }
+              },
+              "operator": "-",
+              "right": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "timestamp 2"
+                }
+              }
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "hash": true,
+              "timestamp 1": true,
+              "timestamp 2": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {}
+          }
+        },
+        {
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "mode": "reduceFields",
+            "reducers": ["min", "median", "mean", "max"]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "timestamp 1 - timestamp 2 Max": "Max",
+              "timestamp 1 - timestamp 2 Mean": "Mean",
+              "timestamp 1 - timestamp 2 Median": "Median",
+              "timestamp 1 - timestamp 2 Min": "Min"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "loki",
+        "uid": "P8E80F9AEF21F6940"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 22
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.6.1",
+      "targets": [
+        {
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{service_name=\"worker\"}\n| json\n| message = \"Transaction processed\"\n| status = \"Success\"",
+          "maxLines": 5000,
+          "queryType": "range",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "direction": "backward",
+          "editorMode": "code",
+          "expr": "{service_name=\"worker\"}\n| json\n| message = \"Transaction processed\"\n| status = \"Failed\"",
+          "hide": false,
+          "maxLines": 5000,
+          "queryType": "range",
+          "refId": "B"
+        }
+      ],
+      "title": "Transaction Status",
+      "transformations": [
+        {
+          "id": "extractFields",
+          "options": {
+            "delimiter": ",",
+            "keepTime": true,
+            "replace": true,
+            "source": "Line"
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": ["status"]
+            }
+          }
+        },
+        {
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "mode": "reduceFields",
+            "reducers": ["count"]
+          }
+        },
+        {
+          "id": "concatenate",
+          "options": {
+            "frameNameLabel": "frame",
+            "frameNameMode": "field"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "signer": false
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "status 1": "Success",
+              "status 2": "Failed"
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Total",
+            "binary": {
+              "left": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Success"
+                }
+              },
+              "right": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Failed"
+                }
+              }
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "",
+            "binary": {
+              "left": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Failed"
+                }
+              },
+              "operator": "/",
+              "right": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Total"
+                }
+              }
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            }
+          }
+        },
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Failure %",
+            "binary": {
+              "left": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Failed / Total"
+                }
+              },
+              "operator": "*",
+              "right": {
+                "fixed": "100"
+              }
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Failed / Total": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "stat"
     }
   ],
   "preload": false,
@@ -246,5 +824,5 @@
   "timezone": "browser",
   "title": "Transactions",
   "uid": "cf85v9isgzgu8a",
-  "version": 1
+  "version": 4
 }
