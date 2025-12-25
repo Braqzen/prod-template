@@ -1,8 +1,10 @@
-discovery.docker "docker" {
+// Find docker containers
+discovery.docker "linux" {
 	host             = "unix:///var/run/docker.sock"
 	refresh_interval = "5s"
 }
 
+// Rename a verbose service identifier
 discovery.relabel "docker" {
 	targets = []
 
@@ -12,15 +14,17 @@ discovery.relabel "docker" {
 	}
 }
 
-loki.source.docker "docker" {
+// Read logs from docker services and send the logs and labels to loki 
+loki.source.docker "default" {
 	host             = "unix:///var/run/docker.sock"
-	targets          = discovery.docker.docker.targets
-	forward_to       = [loki.write.default.receiver]
+	targets          = discovery.docker.linux.targets
+	forward_to       = [loki.write.local.receiver]
 	relabel_rules    = discovery.relabel.docker.rules
 	refresh_interval = "5s"
 }
 
-loki.write "default" {
+// Specify where to send logs
+loki.write "local" {
 	endpoint {
 		url = "http://loki:3100/loki/api/v1/push"
 	}

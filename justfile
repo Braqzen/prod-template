@@ -20,3 +20,7 @@ migrate:
 
 generate:
 	sea-orm-cli generate entity -o crates/database/src/entities -u $DATABASE_URL
+
+# -- Grafana --
+reload:
+	curl -X POST "http://localhost:12345/-/reload"

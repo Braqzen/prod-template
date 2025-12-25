@@ -100,11 +100,11 @@ services:
   alloy:
     image: grafana/alloy:latest
     ports:
-      - "8080:8080"
+      - "12345:12345"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./grafana/alloy:/etc/alloy
-    command: run --server.http.listen-addr=0.0.0.0:8080 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+    command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
     depends_on:
       - loki
     restart: unless-stopped
