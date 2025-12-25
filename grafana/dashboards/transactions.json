@@ -89,6 +89,24 @@
                 "value": 573
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "signer"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Open user activity",
+                    "url": "/d/bf85talgkz3eob/user-activity?orgId=1&from=${__from}&to=${__to}&timezone=browser&var-address=${__data.fields.signer}"
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -810,7 +828,7 @@
     }
   ],
   "preload": false,
-  "refresh": "5s",
+  "refresh": "30s",
   "schemaVersion": 41,
   "tags": [],
   "templating": {
@@ -824,5 +842,5 @@
   "timezone": "browser",
   "title": "Transactions",
   "uid": "cf85v9isgzgu8a",
-  "version": 4
+  "version": 6
 }

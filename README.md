@@ -51,6 +51,6 @@ On the left side of the screen navigate to `Dashboards` and select a dashboard.
 ## Development
 
 - **justfile**: Contains various commands to manage the repo
-- **Dockerfile**: Multi-stage build compiling both RPC and Worker binaries into a single image
+- **Dockerfile**: Multi-stage build compiling the RPC, Worker and Spammer binaries into a single image
 - **docker-compose.yml**: Defines all services for local use
 - **grafana**: Various files for observability configuration and dashboards
